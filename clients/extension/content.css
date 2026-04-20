@@ -1,0 +1,53 @@
+.ai-guardian-alert {
+  position: absolute;
+  z-index: 1000000;
+  background: #0B0F19;
+  color: #E5E7EB;
+  border: 1px solid #EF4444;
+  border-radius: 8px;
+  padding: 12px;
+  width: 280px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(239, 68, 68, 0.2);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  animation: ai-slide-in 0.3s ease-out;
+}
+
+.ai-guardian-header {
+  display: flex;
+  items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #EF4444;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+  padding-bottom: 4px;
+}
+
+.ai-guardian-body {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ai-guardian-footer {
+  margin-top: 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #94A3B8;
+}
+
+.risk-high {
+  color: #EF4444;
+  font-weight: bold;
+}
+
+.risk-medium {
+  color: #F59E0B;
+  font-weight: bold;
+}
+
+@keyframes ai-slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

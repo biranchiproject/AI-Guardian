@@ -3,13 +3,17 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AI Guardian Cyber Safety & Threat Detection API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: analyze
+    description: Text analysis operations
+  - name: dashboard
+    description: Dashboard statistics
 paths:
   /healthz:
     get:
@@ -24,6 +28,97 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /analyze/toxicity:
+    post:
+      operationId: analyzeToxicity
+      tags: [analyze]
+      summary: Analyze text for toxicity
+      description: Analyzes input text for toxic content using ML model
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeRequest"
+      responses:
+        "200":
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+
+  /analyze/scam:
+    post:
+      operationId: analyzeScam
+      tags: [analyze]
+      summary: Analyze text for scam indicators
+      description: Analyzes input text for scam patterns using Naive Bayes classifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeRequest"
+      responses:
+        "200":
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+
+  /analyze/threat:
+    post:
+      operationId: analyzeThreat
+      tags: [analyze]
+      summary: Analyze text for cyber threats
+      description: Analyzes input text for threat indicators using keyword+ML hybrid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeRequest"
+      responses:
+        "200":
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+
+  /analyze/history:
+    get:
+      operationId: getAnalysisHistory
+      tags: [analyze]
+      summary: Get recent analysis history
+      description: Returns the last 50 analysis results
+      responses:
+        "200":
+          description: List of recent analyses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnalysisRecord"
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      description: Returns aggregated stats for the dashboard
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +129,132 @@ components:
       required:
         - status
 
+    AnalyzeRequest:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The text to analyze
+      required:
+        - text
+
+    AnalysisResult:
+      type: object
+      properties:
+        category:
+          type: string
+          description: Classification category (Normal, Toxic, Scam, Threat)
+        confidence:
+          type: number
+          description: Confidence score 0-1
+        riskLevel:
+          type: string
+          description: Risk level (Low, Medium, High)
+        alertMessage:
+          type: string
+          description: Human-readable alert message
+        analyzedText:
+          type: string
+          description: The text that was analyzed
+        analyzerType:
+          type: string
+          description: The type of analyzer used
+        id:
+          type: integer
+          description: Record ID
+        createdAt:
+          type: string
+          description: Timestamp of analysis
+      required:
+        - category
+        - confidence
+        - riskLevel
+        - alertMessage
+        - analyzedText
+        - analyzerType
+
+    AnalysisRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        category:
+          type: string
+        confidence:
+          type: number
+        riskLevel:
+          type: string
+          description: Risk level (Low, Medium, High)
+        alertMessage:
+          type: string
+        analyzedText:
+          type: string
+        analyzerType:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - category
+        - confidence
+        - riskLevel
+        - alertMessage
+        - analyzedText
+        - analyzerType
+        - createdAt
+
+    DashboardStats:
+      type: object
+      properties:
+        totalAnalyzed:
+          type: integer
+          description: Total messages analyzed
+        toxicCount:
+          type: integer
+          description: Count of toxic messages
+        scamCount:
+          type: integer
+          description: Count of scam messages
+        threatCount:
+          type: integer
+          description: Count of threat messages
+        safeCount:
+          type: integer
+          description: Count of safe messages
+        recentActivity:
+          type: array
+          description: Recent analysis breakdown by hour
+          items:
+            type: object
+            properties:
+              hour:
+                type: string
+              count:
+                type: integer
+            required:
+              - hour
+              - count
+        categoryBreakdown:
+          type: array
+          description: Category distribution
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+              count:
+                type: integer
+              percentage:
+                type: number
+            required:
+              - category
+              - count
+              - percentage
+      required:
+        - totalAnalyzed
+        - toxicCount
+        - scamCount
+        - threatCount
+        - safeCount
+        - recentActivity
+        - categoryBreakdown
