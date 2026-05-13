@@ -1,0 +1,25 @@
+services:
+  # Backend API Service
+  - type: web
+    name: ai-guardian-api
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false # You will need to paste this securely in the Render Dashboard
+      - key: PORT
+        value: "5000"
+
+  # Frontend Web Service
+  - type: web
+    name: ai-guardian-web
+    env: static
+    buildCommand: "cd frontend && npm install && npm run build"
+    staticPublishPath: "./frontend/dist"
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: ai-guardian-api
+          envVarKey: RENDER_EXTERNAL_URL
