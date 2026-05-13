@@ -365,6 +365,14 @@ def get_history():
 def health():
     return jsonify({"status": "healthy", "models_loaded": list(models.keys())})
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({
+        "name": "AI-Guardian API",
+        "status": "Running",
+        "endpoints": ["/analyze/toxicity", "/analyze/scam", "/analyze/threat", "/analyze", "/analyze/url", "/chatbot"]
+    })
+
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     debug = os.getenv('DEBUG', 'True').lower() == 'true'
